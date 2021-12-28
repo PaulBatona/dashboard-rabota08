@@ -82,17 +82,16 @@ OS: **Ubuntu 20.04**
 * Запустить скрипт установки, ответить на его вопросы
 
   ```shell
-    $ apt-get update -y && apt install -y curl git ansible
+    $ sudo apt-get update -y && sudo apt-get install -y curl git ansible
     $ curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
     $ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-    $ apt-get update -y && apt-get install -y gh
-    
+    $ sudo apt-get update -y && sudo apt-get install -y gh
+
     $ git config --global core.autocrlf false
-    
+
     $ gh auth login
-    
-    # [Настроить SSH для доступа к **GitHub**](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
-    $ echo "Настройка SSH..."
+
+    # Настроить SSH для доступа к GitHub - https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
     $ ssh-keygen -t ed25519 -C "ВАШ ЕМЕЙЛ"
     $ eval "$(ssh-agent -s)"
     $ ssh-add ~/.ssh/id_ed25519
