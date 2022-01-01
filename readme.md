@@ -71,24 +71,29 @@ OS: **Ubuntu 20.04**
 * Шрифт на клиенте - **PT Sans**
 
 ## Развертывание проекта
+
 ### Установка зависимостей
-* Установить Ubuntu через подсистему Windows для Linux (**WSL**)
-  * ```$ wsl --install``` в командной строке от имени администратора
+* Установить Ubuntu через подсистему Windows для Linux (**WSL**). Требуется Windows версии 1903+
+  * ```$ wsl --install``` в командной строке от имени администратора. Это займет определенное время.
 * (опционально) Скачать редактор кода [WebStorm](https://www.jetbrains.com/toolbox-app/) 
 * Запустить консоль **WSL** (В пуске будет новое приложение "Ubuntu")
-* Придумать ник (маленькими буквами на англ) и записать пароль
-* Клонировать репозиторий в файловую систему WSL
-
-* Запустить скрипт установки, ответить на его вопросы
+* Придумать ник (маленькими буквами на англ) и пароль
+* Запустить скрипт установки (без `$` в начале строки), ответить на его вопросы:
 
   ```shell
     $ sudo apt-get update -y && sudo apt-get install -y curl git ansible
-    $ curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-    $ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-    $ sudo apt-get update -y && sudo apt-get install -y gh
+    $ curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+    $ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+    $ sudo apt update -y
+    $ sudo apt install -y gh
 
-    $ git config --global core.autocrlf false
-
+    # Логин в профиль гитхаба, нужно будет ответить на вопросы как указано в скобках
+    # ? What account do you want to log into?  [Use arrows to move, type to filter]
+    # > GitHub.com
+    # ? What is your preferred protocol for Git operations? (HTTPS)
+    # ? Authenticate Git with your GitHub credentials? (Y)
+    # ? How would you like to authenticate GitHub CLI? (Login with a web browser)
+    # Enter passphrase: (придумать пароль)
     $ gh auth login
 
     # Настроить SSH для доступа к GitHub - https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
@@ -98,11 +103,11 @@ OS: **Ubuntu 20.04**
     $ gh ssh-key add ~/.ssh/id_ed25519.pub
     
     # Клонировать репозиторий в файловую систему WSL
-    $ git clone git@github.com:oxiteam/rabota08.git ~ -b develop
-    
+    $ git config --global core.autocrlf false
+    $ cd ~ && git clone git@github.com:oxiteam/rabota08.git -b develop
+
     # Установить зависимости проекта
-    
-    $ ansible-playbook -K ./rabota08/ansible/local-deploy.yaml
+    $ ansible-playbook -K ./ansible/local-deploy.yaml
    ```
 
 * Добавить файлы `.env` в `server`, `client`, `dashboard` (взять из телеграм беседы)
@@ -115,7 +120,7 @@ OS: **Ubuntu 20.04**
 * Отписаться об успехе! Если что-то пошло не так, написать о проблеме с приложенными скриншотами
 
 ## Дополнительно
-
+* Открыть проект в проводнике можно по адресу `\\wsl$\Ubuntu\home\zernie\rabota08`
 * Зарегистрироваться в [ZenHub](https://app.zenhub.com/workspaces/rabota08-61914f80e0714b001c4910de/board?invite=true) и установить их [расширение](https://www.zenhub.com/extension) для трекинга задач
 * (опционально) Установить консоль [Cmder](https://cmder.net/) для удобного доступа к **WSL**
 * (опционально) Настроить **WebStorm** для максимального удобства
@@ -164,12 +169,12 @@ OS: **Ubuntu 20.04**
   * **Prettier**
 
      Пример - http://screenshot.ru/26728225ad02771672f32732177c8553.png
-* Если WebStorm глючит
-  Открыть `Help / Edit VM Options` и изменить
-  ```
-   -Xms256m
-   -Xmx2048m
-  ```
+  * Если WebStorm глючит
+    Открыть `Help / Edit VM Options` и изменить
+    ```
+      -Xms256m
+      -Xmx2048m
+    ```
 * Если виртуальная машина съедает слишком много памяти:
   * Создать файл `.wslconfig` в папке юзера Windows:
     ```
@@ -178,3 +183,11 @@ OS: **Ubuntu 20.04**
     ```
   * Перезапустить виртуальную машину
 * Если при попытке залогиниться падает ошибка, то нужно зайти на https://whatismyipaddress.com/ и прислать мне свой IP, чтобы я мог добавить его в список разрешенных.
+* Если при попытке установить зависимости падает ошибка, то нужно:
+  * Открыть `C:\Windows\System32\lxss\lib` в проводнике и отправить `libcuda.so` and `libcuda.so.1` в корзину
+  * В Ubuntu выполнить:
+    ```shell
+      $ cd /mnt/c/Windows/System32/lxss/lib
+      $ ln -s libcuda.so.1.1 libcuda.so.1
+      $ ln -s libcuda.so.1.1 libcuda.so`
+    ```
